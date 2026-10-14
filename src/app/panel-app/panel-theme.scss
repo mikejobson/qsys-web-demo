@@ -1,0 +1,90 @@
+// Shared look for everything rendered on the touch panel screen.
+// Sizes are native panel pixels (1280×800); the frame handles scaling.
+
+app-panel-app {
+  --bg: #0f1216;
+  --surface: #181c22;
+  --surface-2: #20252d;
+  --line: #2b313a;
+  --text: #eef1f5;
+  --muted: #8a94a3;
+  --accent: #3d8bff;
+  --ok: #3ddc84;
+  --warn: #ffb020;
+  --bad: #ff4d4f;
+}
+
+app-panel-app {
+  .qs-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 72px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--surface-2);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--text);
+    font: inherit;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background 0.12s, color 0.12s, transform 0.06s;
+
+    &:active:not(.disabled, :disabled) {
+      transform: scale(0.97);
+    }
+
+    &.on {
+      background: var(--accent);
+      box-shadow: none;
+      color: #fff;
+    }
+
+    &.danger.on {
+      background: var(--bad);
+    }
+
+    &.disabled,
+    &:disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+    padding: 20px 24px;
+    border-radius: 22px;
+    background: rgb(24 28 34 / 75%);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .card-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+
+    small {
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--text);
+    }
+  }
+}

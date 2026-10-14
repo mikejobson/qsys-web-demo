@@ -1,0 +1,63 @@
+<header class="topbar">
+  <div class="room">
+    <span class="room-name">Demo Room</span>
+    <span class="room-sub">{{ qsys.engineStatus()?.DesignName ?? 'Q-SYS Control' }}</span>
+  </div>
+  <div class="clock">
+    <span class="time">{{ now() | date: 'HH:mm' }}</span>
+    <span class="date">{{ now() | date: 'EEE d MMM' }}</span>
+  </div>
+  <div class="status" [attr.data-state]="qsys.state()">
+    <span class="dot"></span>
+    {{ statusLabel() }}
+  </div>
+</header>
+
+<main class="content">
+  @switch (qsys.state()) {
+    @case ('connected') {
+      @switch (activePage()) {
+        @case ('audio') { <app-audio-page /> }
+        @case ('video') { <app-video-page /> }
+        @case ('camera') { <app-camera-page /> }
+        @default { <app-home-page /> }
+      }
+    }
+    @case ('connecting') {
+      <section class="placeholder">
+        <div class="spinner"></div>
+        <h1>Connecting to Core…</h1>
+        <p>{{ qsys.settings().host }}</p>
+      </section>
+    }
+    @case ('reconnecting') {
+      <section class="placeholder">
+        <div class="spinner amber"></div>
+        <h1>Connection lost</h1>
+        <p>Trying to reconnect to {{ qsys.settings().host }}…</p>
+      </section>
+    }
+    @default {
+      <section class="placeholder">
+        <div class="placeholder-icon muted">⏻</div>
+        <h1>{{ qsys.state() === 'failed' ? 'Core unavailable' : 'Not connected' }}</h1>
+        <p>Enter the Core IP in the connection panel to bring this touch panel online.</p>
+      </section>
+    }
+  }
+</main>
+
+<nav class="tabbar">
+  @for (item of nav; track item.id) {
+    <button
+      type="button"
+      class="tab"
+      [class.active]="activePage() === item.id"
+      [disabled]="!qsys.isConnected()"
+      (click)="activePage.set(item.id)"
+    >
+      <span class="tab-icon">{{ item.icon }}</span>
+      <span>{{ item.label }}</span>
+    </button>
+  }
+</nav>

@@ -1,0 +1,166 @@
+<section class="card">
+  <header class="card-head">
+    <h2>Core connection</h2>
+    <span class="badge" [attr.data-state]="qsys.state()">{{ qsys.state() }}</span>
+  </header>
+
+  <form class="form" (submit)="$event.preventDefault(); connect()">
+    <label class="field">
+      <span>Core IP / hostname</span>
+      <input
+        type="text"
+        inputmode="decimal"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="192.168.1.100"
+        [value]="host()"
+        (input)="host.set(value($event))"
+        [disabled]="qsys.isConnected() || qsys.isBusy()"
+        [class.invalid]="host() && !hostValid()"
+      />
+    </label>
+
+    <div class="row">
+      <div class="field">
+        <span>Protocol</span>
+        <div class="segmented" role="radiogroup" aria-label="Protocol">
+          <button
+            type="button"
+            role="radio"
+            [attr.aria-checked]="!secure()"
+            [class.on]="!secure()"
+            [disabled]="qsys.isConnected() || qsys.isBusy()"
+            (click)="secure.set(false)"
+          >
+            ws://
+          </button>
+          <button
+            type="button"
+            role="radio"
+            [attr.aria-checked]="secure()"
+            [class.on]="secure()"
+            [disabled]="qsys.isConnected() || qsys.isBusy()"
+            (click)="secure.set(true)"
+          >
+            wss://
+          </button>
+        </div>
+      </div>
+      <label class="field narrow">
+        <span>Poll (ms)</span>
+        <input
+          type="number"
+          min="34"
+          step="1"
+          [value]="pollingInterval()"
+          (input)="pollingInterval.set(+value($event))"
+          [disabled]="qsys.isConnected() || qsys.isBusy()"
+        />
+      </label>
+    </div>
+
+    <label class="field">
+      <span>Access key <em>(only if Core access control is on)</em></span>
+      <input
+        type="password"
+        autocomplete="off"
+        [value]="apiKey()"
+        (input)="apiKey.set(value($event))"
+        [disabled]="qsys.isConnected() || qsys.isBusy()"
+      />
+    </label>
+
+    @if (mixedContent()) {
+      <p class="note warn">This page is served over https, so the browser will block <code>ws://</code>. Use wss:// or serve over http.</p>
+    }
+
+    <div class="actions">
+      @if (qsys.state() === 'disconnected' || qsys.state() === 'failed') {
+        <button type="submit" class="btn primary" [disabled]="!hostValid()">Connect</button>
+      } @else {
+        <button type="button" class="btn danger" (click)="qsys.disconnect()">
+          {{ qsys.isBusy() ? 'Cancel' : 'Disconnect' }}
+        </button>
+      }
+    </div>
+  </form>
+</section>
+
+<section class="card">
+  <header class="card-head">
+    <h2>Engine status</h2>
+  </header>
+  @if (qsys.engineStatus(); as es) {
+    <dl class="kv">
+      <dt>Platform</dt>
+      <dd>{{ es.Platform ?? '—' }}</dd>
+      <dt>Design</dt>
+      <dd>{{ es.DesignName ?? '—' }}</dd>
+      <dt>Design code</dt>
+      <dd class="mono">{{ es.DesignCode ?? '—' }}</dd>
+      <dt>State</dt>
+      <dd>{{ es.State }}</dd>
+      <dt>Status</dt>
+      <dd>{{ es.Status ? es.Status.Code + ' · ' + es.Status.String : '—' }}</dd>
+      <dt>Emulator</dt>
+      <dd>{{ es.IsEmulator ? 'Yes' : 'No' }}</dd>
+      <dt>Redundant</dt>
+      <dd>{{ es.IsRedundant ? 'Yes' : 'No' }}</dd>
+      @if (qsys.connectedAt(); as at) {
+        <dt>Connected</dt>
+        <dd>{{ at | date: 'HH:mm:ss' }}</dd>
+      }
+    </dl>
+  } @else {
+    <p class="empty">Connect to a Core to see its engine status.</p>
+  }
+</section>
+
+<section class="card grow">
+  <header class="card-head">
+    <h2>Scriptable components</h2>
+    <span class="count">{{ qsys.components().length }}</span>
+  </header>
+  @if (qsys.components().length) {
+    <input
+      class="filter"
+      type="search"
+      placeholder="Filter by name or type"
+      [value]="componentFilter()"
+      (input)="componentFilter.set(value($event))"
+    />
+    <ul class="components">
+      @for (c of filteredComponents(); track c.name) {
+        <li>
+          <span class="c-name">{{ c.name }}</span>
+          <span class="c-type">{{ c.type }}</span>
+          <span class="c-count">{{ c.controlCount }} ctl</span>
+        </li>
+      } @empty {
+        <li class="empty">No matches.</li>
+      }
+    </ul>
+  } @else {
+    <p class="empty">
+      Components appear here once connected. In Designer, set <em>Code Access</em> to <em>External</em> or
+      <em>All</em> on each component you want the panel to control.
+    </p>
+  }
+</section>
+
+<section class="card log-card">
+  <header class="card-head">
+    <h2>Event log</h2>
+    <button type="button" class="link" (click)="qsys.clearLog()" [disabled]="!qsys.log().length">Clear</button>
+  </header>
+  <ol class="log">
+    @for (entry of qsys.log(); track $index) {
+      <li [attr.data-level]="entry.level">
+        <time>{{ entry.time | date: 'HH:mm:ss' }}</time>
+        <span>{{ entry.message }}</span>
+      </li>
+    } @empty {
+      <li class="empty">Nothing yet.</li>
+    }
+  </ol>
+</section>

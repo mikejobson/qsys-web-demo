@@ -1,0 +1,20 @@
+<div class="stage" #stage>
+  <div
+    class="sizer"
+    [style.width.px]="frameWidth() * scale()"
+    [style.height.px]="frameHeight() * scale()"
+  >
+    <div
+      class="device"
+      [style.width.px]="frameWidth()"
+      [style.height.px]="frameHeight()"
+      [style.transform]="'scale(' + scale() + ')'"
+    >
+      <span class="camera" aria-hidden="true"></span>
+      <span [class]="'led ' + ledColor()" aria-hidden="true"></span>
+      <div class="screen" [style.width.px]="screenWidth()" [style.height.px]="screenHeight()">
+        <ng-content />
+      </div>
+    </div>
+  </div>
+</div>
