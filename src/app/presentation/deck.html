@@ -1,0 +1,447 @@
+<div class="viewport" (click)="next()">
+  <div class="stage" [style.transform]="'translate(-50%, -50%) scale(' + scale() + ')'">
+    <div class="aurora" aria-hidden="true"></div>
+
+    @switch (index()) {
+      <!-- ───────────── 1. Title ───────────── -->
+      @case (0) {
+        <section class="slide title" [class.back]="direction() < 0">
+          <svg class="hexfield" viewBox="0 0 1920 1080" aria-hidden="true">
+            @for (h of hexes; track $index) {
+              <g [attr.transform]="'translate(' + h.x + ' ' + h.y + ')'">
+                <polygon
+                  class="hex"
+                  [attr.points]="'0,-' + h.size + ' ' + h.size * 0.866 + ',-' + h.size / 2 + ' ' + h.size * 0.866 + ',' + h.size / 2 + ' 0,' + h.size + ' -' + h.size * 0.866 + ',' + h.size / 2 + ' -' + h.size * 0.866 + ',-' + h.size / 2"
+                  [style.opacity]="h.opacity"
+                  [style.animation-delay.ms]="h.delay"
+                  [style.animation-duration.ms]="h.duration"
+                />
+              </g>
+            }
+          </svg>
+          <div class="title-block">
+            <qs-logo class="big-logo rise" style="--d: 200ms" />
+            <h1 class="rise" style="--d: 500ms">Panel Workbench</h1>
+            <p class="lede rise" style="--d: 800ms">From an empty folder to live control of a Q-SYS Core</p>
+            <div class="built-with rise" style="--d: 1200ms">
+              <span class="claude-mark">✳</span>
+              Built with <strong>Claude Code</strong> in the terminal
+            </div>
+          </div>
+          <div class="presenter rise" style="--d: 1600ms">
+            <img class="proav-logo" src="proav-logo.svg" alt="proAV" draggable="false" />
+            <span class="divider" aria-hidden="true"></span>
+            <div class="who">
+              <strong>Mike Jobson</strong>
+              <span>Head of Software &amp; Development</span>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────── 2. The brief ───────────── -->
+      @case (1) {
+        <section class="slide brief">
+          <header class="slide-head">
+            <span class="kicker rise">01 · The brief</span>
+            <h2 class="rise" style="--d: 150ms">It started with one prompt</h2>
+          </header>
+          <deck-terminal class="term rise" style="--d: 300ms" [lines]="briefScript" [delay]="700" />
+          <p class="footnote rise" style="--d: 900ms">Typos and all. That's the real first message.</p>
+        </section>
+      }
+
+      <!-- ───────────── 3. Pipeline ───────────── -->
+      @case (2) {
+        <section class="slide pipeline">
+          <header class="slide-head">
+            <span class="kicker rise">02 · What Claude did with it</span>
+            <h2 class="rise" style="--d: 150ms">Five steps, no hand-holding</h2>
+          </header>
+          <div class="flow">
+            <svg class="flow-line" viewBox="0 0 1600 20" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="0" y1="10" x2="1600" y2="10" />
+            </svg>
+            @for (step of pipeline; track step.title; let i = $index) {
+              <div class="node" [style.--d.ms]="500 + i * 450">
+                <div class="node-ring">
+                  <span>{{ i + 1 }}</span>
+                </div>
+                <h3>{{ step.title }}</h3>
+                <p>{{ step.detail }}</p>
+              </div>
+            }
+          </div>
+          <p class="callout rise" style="--d: 3000ms">
+            It read the library's own README and type definitions before writing a line of code.
+          </p>
+        </section>
+      }
+
+      <!-- ───────────── 4. Architecture ───────────── -->
+      @case (3) {
+        <section class="slide wire">
+          <header class="slide-head">
+            <span class="kicker rise">03 · Under the hood</span>
+            <h2 class="rise" style="--d: 150ms">One WebSocket. Live both ways.</h2>
+          </header>
+          <svg class="arch" viewBox="0 0 1700 520" aria-hidden="true">
+            <defs>
+              <linearGradient id="pipe" x1="0" x2="1">
+                <stop offset="0" stop-color="#3d8bff" stop-opacity="0.15" />
+                <stop offset="0.5" stop-color="#3d8bff" stop-opacity="0.45" />
+                <stop offset="1" stop-color="#3d8bff" stop-opacity="0.15" />
+              </linearGradient>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="6" result="b" />
+                <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+            </defs>
+
+            <!-- Touch panel -->
+            <g class="pop" style="--d: 300ms">
+              <rect x="40" y="100" width="440" height="300" rx="34" class="device-body" />
+              <rect x="74" y="134" width="372" height="232" rx="10" class="device-screen" />
+              <rect x="100" y="160" width="140" height="18" rx="9" class="ui-bar" />
+              <rect x="100" y="200" width="320" height="34" rx="10" class="ui-fader" />
+              <rect x="100" y="200" width="190" height="34" rx="10" class="ui-fader-fill" />
+              <rect x="100" y="256" width="92" height="80" rx="12" class="ui-btn on" />
+              <rect x="214" y="256" width="92" height="80" rx="12" class="ui-btn" />
+              <rect x="328" y="256" width="92" height="80" rx="12" class="ui-btn" />
+              <text x="260" y="460" class="arch-label">Angular touch panel</text>
+              <text x="260" y="496" class="arch-sub">in the browser</text>
+            </g>
+
+            <!-- Pipe -->
+            <g class="pop" style="--d: 700ms">
+              <rect x="500" y="226" width="700" height="48" rx="24" fill="url(#pipe)" />
+              <text x="850" y="196" class="arch-mono">ws://core/qrc-public-api/v0</text>
+              <text x="850" y="324" class="arch-sub">JSON-RPC over WebSocket · &#64;q-sys/qrwc</text>
+            </g>
+            <g class="pop" style="--d: 1100ms" filter="url(#glow)">
+              <circle r="9" class="packet out">
+                <animateMotion dur="1.6s" repeatCount="indefinite" path="M520,240 L1180,240" />
+              </circle>
+              <circle r="9" class="packet out">
+                <animateMotion dur="1.6s" begin="0.8s" repeatCount="indefinite" path="M520,240 L1180,240" />
+              </circle>
+              <circle r="9" class="packet in">
+                <animateMotion dur="1.2s" begin="0.3s" repeatCount="indefinite" path="M1180,262 L520,262" />
+              </circle>
+              <circle r="9" class="packet in">
+                <animateMotion dur="1.2s" begin="0.9s" repeatCount="indefinite" path="M1180,262 L520,262" />
+              </circle>
+            </g>
+
+            <!-- Core -->
+            <g class="pop" style="--d: 500ms">
+              <rect x="1220" y="170" width="440" height="160" rx="16" class="core-body" />
+              <rect x="1250" y="200" width="220" height="16" rx="8" class="core-slot" />
+              <rect x="1250" y="232" width="220" height="16" rx="8" class="core-slot" />
+              <rect x="1250" y="264" width="220" height="16" rx="8" class="core-slot" />
+              <circle cx="1530" cy="250" r="34" class="core-ring" />
+              <circle cx="1530" cy="250" r="12" class="core-led" />
+              <circle cx="1612" cy="204" r="6" class="core-led small" />
+              <text x="1440" y="460" class="arch-label">Q-SYS Core 110f</text>
+              <text x="1440" y="496" class="arch-sub">QRWC Workshop Starter File</text>
+            </g>
+          </svg>
+          <div class="rpc-row">
+            @for (r of rpcs; track r.name; let i = $index) {
+              <div class="rpc rise" [style.--d.ms]="1400 + i * 220">
+                <span class="dir">{{ r.dir }}</span>
+                <code>{{ r.name }}</code>
+                <span class="note">{{ r.note }}</span>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ───────────── 5. Verify loop ───────────── -->
+      @case (4) {
+        <section class="slide verify">
+          <header class="slide-head">
+            <span class="kicker rise">04 · Trust, but verify</span>
+            <h2 class="rise" style="--d: 150ms">It checks its own work</h2>
+          </header>
+          <div class="verify-body">
+            <div class="loop pop" style="--d: 300ms">
+              <svg viewBox="0 0 600 600" aria-hidden="true">
+                <circle cx="300" cy="300" r="230" class="loop-track" />
+                <circle cx="300" cy="300" r="230" class="loop-sweep" />
+              </svg>
+              @for (step of loop; track step; let i = $index) {
+                <div
+                  class="loop-node"
+                  [style.--a]="(i * 360) / loop.length - 90 + 'deg'"
+                  [style.--i]="i"
+                >
+                  <span>{{ step }}</span>
+                </div>
+              }
+              <div class="loop-center">
+                <span class="big">Real</span>
+                <span>browser</span>
+              </div>
+            </div>
+            <div class="catches">
+              <h3 class="rise" style="--d: 600ms">Things it caught and fixed itself</h3>
+              @for (c of catches; track c; let i = $index) {
+                <div class="catch rise" [style.--d.ms]="900 + i * 450">
+                  <span class="tick">✓</span>
+                  {{ c }}
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────── 6. Discovery ───────────── -->
+      @case (5) {
+        <section class="slide discover">
+          <header class="slide-head">
+            <span class="kicker rise">05 · "Now look at the core"</span>
+            <h2 class="rise" style="--d: 150ms">It interrogated the real system</h2>
+          </header>
+          <div class="stats">
+            <div class="stat rise" style="--d: 300ms">
+              <span class="num"><deck-count-up [to]="11" [delay]="400" /></span>
+              <span class="lbl">scriptable components</span>
+            </div>
+            <div class="stat rise" style="--d: 450ms">
+              <span class="num"><deck-count-up [to]="1521" [delay]="550" [duration]="2200" /></span>
+              <span class="lbl">controls mapped</span>
+            </div>
+            <div class="stat rise" style="--d: 600ms">
+              <span class="num"><deck-count-up [to]="3" [delay]="700" /></span>
+              <span class="lbl">live PTZ cameras</span>
+            </div>
+          </div>
+          <div class="chips">
+            @for (c of components; track c.name; let i = $index) {
+              <div class="chip" [style.--d.ms]="1200 + i * 120" [style.--r]="(i % 2 ? 1 : -1) * (6 + (i % 4) * 4) + 'deg'">
+                <strong>{{ c.name }}</strong>
+                <span>{{ c.type }}</span>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ───────────── 7. Controls in one line ───────────── -->
+      @case (6) {
+        <section class="slide controls">
+          <header class="slide-head">
+            <span class="kicker rise">06 · "Add some demo controls"</span>
+            <h2 class="rise" style="--d: 150ms">Any control. One line.</h2>
+          </header>
+          <div class="controls-body">
+            <pre class="code rise" style="--d: 400ms">@for (l of code; track $index) {<span class="code-line" [class.comment]="l.t === 'c'" [style.--d.ms]="600 + $index * 160">{{ l.s }}</span>
+}</pre>
+            <div class="rig pop" style="--d: 900ms">
+              <div class="rig-fader">
+                <div class="rig-track"><div class="rig-fill"></div><div class="rig-thumb"></div></div>
+                <span>MainGain</span>
+              </div>
+              <div class="rig-meter"><div class="rig-meter-fill"></div></div>
+              <div class="rig-side">
+                <div class="rig-mute">Mute</div>
+                <div class="rig-live"><span class="pulse"></span>Live from the Core</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────── 8. The panel ───────────── -->
+      @case (7) {
+        <section class="slide panel">
+          <header class="slide-head">
+            <span class="kicker rise">07 · The result</span>
+            <h2 class="rise" style="--d: 150ms">Four pages, all live</h2>
+          </header>
+          <div class="pages">
+            <div class="page-card flip" style="--d: 300ms">
+              <div class="mini home">
+                <div class="m-fader"><div></div></div>
+                <div class="m-grid">
+                  @for (n of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track n) {
+                    <i [class.on]="n === 5"></i>
+                  }
+                </div>
+                <div class="m-cam"><span></span></div>
+              </div>
+              <h3>Home</h3>
+              <p>Volume, display source, conference camera</p>
+            </div>
+            <div class="page-card flip" style="--d: 500ms">
+              <div class="mini audio">
+                @for (n of [1, 2, 3, 4, 5]; track n) {
+                  <div class="m-strip"><div [style.animation-delay.ms]="n * -700"></div></div>
+                }
+              </div>
+              <h3>Audio</h3>
+              <p>Faders, mutes, EQ, delay, limiter meters</p>
+            </div>
+            <div class="page-card flip" style="--d: 700ms">
+              <div class="mini video">
+                @for (n of [1, 2, 3, 4, 5, 6, 7, 8]; track n) {
+                  <i [style.animation-delay.ms]="n * 500"></i>
+                }
+              </div>
+              <h3>Video</h3>
+              <p>HDMI switcher sources, camera to far end</p>
+            </div>
+            <div class="page-card flip" style="--d: 900ms">
+              <div class="mini camera">
+                <div class="m-view"><span></span></div>
+                <div class="m-pad">
+                  <i></i><i class="hit"></i><i></i><i class="hit2"></i><i class="c"></i><i></i><i></i><i></i><i></i>
+                </div>
+              </div>
+              <h3>Camera</h3>
+              <p>Live stills, PTZ, presets (hold to save)</p>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────── 9. Judgement ───────────── -->
+      @case (8) {
+        <section class="slide judgement">
+          <div class="judge-visual pop" style="--d: 200ms">
+            <div class="viewfinder">
+              <span class="corner tl"></span><span class="corner tr"></span>
+              <span class="corner bl"></span><span class="corner br"></span>
+              <span class="rec"><i></i>LIVE</span>
+              <div class="people">
+                @for (n of [1, 2, 3, 4, 5, 6, 7]; track n) {
+                  <div class="person" [style.--i]="n"><span class="head"></span><span class="body"></span></div>
+                }
+              </div>
+            </div>
+            <div class="shield">
+              <svg viewBox="0 0 100 120" aria-hidden="true">
+                <path d="M50 4 L92 20 V58 C92 86 72 106 50 116 C28 106 8 86 8 58 V20 Z" />
+                <path class="check" d="M30 60 L45 75 L72 45" />
+              </svg>
+            </div>
+          </div>
+          <div class="judge-text">
+            <span class="kicker rise" style="--d: 400ms">08 · Judgement, not just code</span>
+            <h2 class="rise" style="--d: 600ms">It saw a room full of people and kept its hands off the buttons</h2>
+            <p class="rise" style="--d: 1000ms">
+              The real Core was <em>read only</em> during testing. Mutes, faders and camera moves were
+              proven against a throwaway mock Core instead.
+            </p>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────── 10. Iterate ───────────── -->
+      @case (9) {
+        <section class="slide iterate">
+          <header class="slide-head">
+            <span class="kicker rise">09 · Iterate at the speed of conversation</span>
+            <h2 class="rise" style="--d: 150ms">Try it. Hate it. Undo it.</h2>
+          </header>
+          <div class="iterate-body">
+            <div class="chat">
+              <div class="bubble me" style="--d: 500ms">add transparent controls over the top of the camera preview image on the home page</div>
+              <div class="bubble ai" style="--d: 1400ms">Done. Frosted pan, tilt and zoom controls over the live image.</div>
+              <div class="bubble me" style="--d: 3200ms">i don't like it, remove them</div>
+              <div class="bubble ai" style="--d: 4000ms">Removed. Home is back exactly as it was.</div>
+            </div>
+            <div class="cam-tile pop" style="--d: 300ms">
+              <div class="scene">
+                @for (n of [1, 2, 3, 4, 5]; track n) {
+                  <div class="person" [style.--i]="n"><span class="head"></span><span class="body"></span></div>
+                }
+              </div>
+              <div class="overlay-demo">
+                <i class="o up">▲</i><i class="o down">▼</i><i class="o left">◀</i><i class="o right">▶</i>
+                <i class="o zin">＋</i><i class="o zout">－</i>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────── 11. Ship ───────────── -->
+      @case (10) {
+        <section class="slide ship">
+          <header class="slide-head">
+            <span class="kicker rise">10 · Ship it</span>
+            <h2 class="rise" style="--d: 150ms">Committed and on GitHub in two sentences</h2>
+          </header>
+          <deck-terminal class="term rise" style="--d: 300ms" [lines]="shipScript" [delay]="700" [speed]="34" />
+        </section>
+      }
+
+      <!-- ───────────── 12. Numbers ───────────── -->
+      @case (11) {
+        <section class="slide numbers">
+          <header class="slide-head">
+            <span class="kicker rise">11 · By the numbers</span>
+            <h2 class="rise" style="--d: 150ms">One afternoon session</h2>
+          </header>
+          <div class="num-grid">
+            <div class="n-card rise" style="--d: 300ms">
+              <span class="num">~<deck-count-up [to]="75" [delay]="400" /></span>
+              <span class="lbl">minutes, empty folder to pushed repo</span>
+            </div>
+            <div class="n-card rise" style="--d: 450ms">
+              <span class="num"><deck-count-up [to]="10" [delay]="550" /></span>
+              <span class="lbl">prompts, this deck included</span>
+            </div>
+            <div class="n-card rise" style="--d: 600ms">
+              <span class="num"><deck-count-up [to]="2260" [delay]="700" [duration]="2200" /></span>
+              <span class="lbl">lines across 26 source files</span>
+            </div>
+            <div class="n-card accent rise" style="--d: 750ms">
+              <span class="num"><deck-count-up [to]="0" [delay]="850" /></span>
+              <span class="lbl">lines of code typed by hand</span>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ───────────── 13. Live ───────────── -->
+      @case (12) {
+        <section class="slide live">
+          <svg class="hexfield" viewBox="0 0 1920 1080" aria-hidden="true">
+            @for (h of hexes; track $index) {
+              <g [attr.transform]="'translate(' + h.x + ' ' + h.y + ')'">
+                <polygon
+                  class="hex"
+                  [attr.points]="'0,-' + h.size + ' ' + h.size * 0.866 + ',-' + h.size / 2 + ' ' + h.size * 0.866 + ',' + h.size / 2 + ' 0,' + h.size + ' -' + h.size * 0.866 + ',' + h.size / 2 + ' -' + h.size * 0.866 + ',-' + h.size / 2"
+                  [style.opacity]="h.opacity"
+                  [style.animation-delay.ms]="h.delay"
+                  [style.animation-duration.ms]="h.duration"
+                />
+              </g>
+            }
+          </svg>
+          <h2 class="rise" style="--d: 200ms">Let's see it live</h2>
+          <button type="button" class="launch pop" style="--d: 600ms" (click)="$event.stopPropagation(); launchDemo()">
+            <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+            <span class="launch-label">Open the panel →</span>
+          </button>
+          <p class="hint rise" style="--d: 1000ms">Press Enter or D</p>
+        </section>
+      }
+    }
+
+    <!-- Chrome: progress + counter + controls -->
+    <div class="progress"><div [style.width.%]="((index() + 1) / slides.length) * 100"></div></div>
+    <div class="deck-ui" (click)="$event.stopPropagation()">
+      <button type="button" (click)="prev()" [disabled]="index() === 0" aria-label="Previous slide">‹</button>
+      <span class="counter">{{ index() + 1 }} / {{ slides.length }}</span>
+      <button type="button" (click)="next()" [disabled]="index() === slides.length - 1" aria-label="Next slide">›</button>
+      <button type="button" class="wide" (click)="toggleFullscreen()">Fullscreen</button>
+      <button type="button" class="wide" (click)="launchDemo()">Demo</button>
+    </div>
+  </div>
+</div>

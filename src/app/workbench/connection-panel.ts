@@ -16,7 +16,7 @@ export class ConnectionPanel {
 
   protected readonly host = signal(this.qsys.settings().host);
   protected readonly secure = signal(this.qsys.settings().secure);
-  protected readonly apiKey = signal('');
+  protected readonly apiKey = signal(this.qsys.settings().apiKey);
   protected readonly pollingInterval = signal(this.qsys.settings().pollingInterval);
   protected readonly componentFilter = signal('');
 

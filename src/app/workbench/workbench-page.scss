@@ -25,6 +25,23 @@
   }
 }
 
+.appbar-right {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.present-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wb-accent);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .brand {
   display: flex;
   align-items: center;

@@ -1,0 +1,50 @@
+<header class="appbar">
+  <div class="brand">
+    <qs-logo class="qsys-logo" />
+    <span class="divider" aria-hidden="true"></span>
+    <h1>Panel Workbench</h1>
+  </div>
+  <div class="appbar-right">
+    <span class="sub">Touch panel emulator · QRWC</span>
+    <a class="present-link" routerLink="/present">Presentation</a>
+  </div>
+</header>
+
+<main class="workspace">
+  <section class="panel-area">
+    <div class="toolbar">
+      <span class="spec">10.1″ touch panel · 1280 × 800</span>
+      <div class="toolbar-right">
+        <span class="scale">{{ scalePercent() }}%</span>
+        <div class="segmented" role="radiogroup" aria-label="Orientation">
+          <button
+            type="button"
+            role="radio"
+            [attr.aria-checked]="orientation() === 'landscape'"
+            [class.on]="orientation() === 'landscape'"
+            (click)="orientation.set('landscape')"
+          >
+            Landscape
+          </button>
+          <button
+            type="button"
+            role="radio"
+            [attr.aria-checked]="orientation() === 'portrait'"
+            [class.on]="orientation() === 'portrait'"
+            (click)="orientation.set('portrait')"
+          >
+            Portrait
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <app-touch-panel-frame class="frame" [orientation]="orientation()" [ledColor]="ledColor()">
+      <app-panel-app />
+    </app-touch-panel-frame>
+  </section>
+
+  <aside class="sidebar">
+    <app-connection-panel />
+  </aside>
+</main>

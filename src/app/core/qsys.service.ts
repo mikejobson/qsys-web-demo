@@ -221,8 +221,9 @@ function loadSettings(): ConnectionSettings {
 
 function saveSettings(settings: ConnectionSettings): void {
   try {
-    // The access key is deliberately not persisted.
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...settings, apiKey: '' }));
+    // Saved alongside the IP (including the access key) so the form is pre-filled
+    // next time. Nothing connects automatically.
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
   } catch {
     // Storage unavailable — settings just won't persist.
   }
